@@ -67,7 +67,7 @@
     </com.github.sshadkany.RectButton>
 
     <com.github.sshadkany.RectButton
-        android:id="@+id/btn_fll"
+        android:id="@+id/btn_update"
         style="@style/Style.DayButton"
         android:layout_width="100dp"
         android:layout_height="100dp"
@@ -102,7 +102,7 @@
 
         android:layout_marginStart="-35dp"
         android:layout_marginTop="5dp"
-        app:layout_constraintStart_toEndOf="@+id/btn_fll"
+        app:layout_constraintStart_toEndOf="@+id/btn_update"
         app:layout_constraintTop_toTopOf="parent"
         app:shape_roundRect_borderWidth="1dp"
         app:shape_roundRect_bottomLeftRadius="100dp"
@@ -143,19 +143,55 @@
             android:layout_height="310dp"
             android:layout_gravity="center">
 
-
-
-            <com.mut_jaeryo.circletimer.CircleTimer
+            <net.crosp.libs.android.circletimeview.CircleTimeView
                 android:id="@+id/timer"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="250dp"
                 android:layout_gravity="center"
+                android:layout_weight="0.9"
                 android:background="@color/clear"
-                android:foregroundGravity="center"
-                android:visibility="visible"
-                app:init_position="794"
-                app:isOutline="true"
-                app:show_text="true" />
+                app:ctvCircleButtonColor="#B8B7B6"
+                app:ctvCircleColor="#DCDBDA"
+                app:ctvCircleHandButtonRadius="8dp"
+                app:ctvCirclePressedButtonColor="#94A3A5"
+                app:ctvCircleStrokeWidth="1dp"
+                app:ctvCurrentTimeInSeconds="320"
+                app:ctvHighlightMarkLineColor="#979890"
+                app:ctvLabelText="Ti-Timer"
+                app:ctvLabelTextColor="#A38561"
+                app:ctvLabelTextSize="8sp"
+                app:ctvLapBackgroundColor="#B5A9A0"
+                app:ctvLapLabelMarginTop="15dp"
+                app:ctvLapLabelTextSize="12sp"
+                app:ctvLapTextColor="#fff"
+                app:ctvMarginTopLabel="22dp"
+                app:ctvMarkLineColor="#ffffff"
+                app:ctvMarkLineWidth="1dp"
+                app:ctvMarkSize="10dp"
+                app:ctvMinutesMarkCount="120"
+                app:ctvMultiLapRotation="true"
+                app:ctvPaddingInnerRadius="20dp"
+                app:ctvPaddingQuarterNumber="5dp"
+                app:ctvQuarterMarkSize="15dp"
+                app:ctvQuarterNumberColor="#ADC6AD"
+                app:ctvQuarterNumberTextSize="12sp"
+                app:ctvShowLaps="true"
+                app:ctvTimeFormat="seconds_minutes"
+                app:ctvTimeMode="manual"
+                app:ctvTimeNumberColor="#705035"
+                app:ctvTimeNumbersTextSize="30sp" />
+
+<!--            <com.mut_jaeryo.circletimer.CircleTimer-->
+<!--                android:id="@+id/timer"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="200dp"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:background="@color/clear"-->
+<!--                android:foregroundGravity="center"-->
+<!--                android:visibility="visible"-->
+<!--                app:init_position="794"-->
+<!--                app:isOutline="true"-->
+<!--                app:show_text="true" />-->
 
         </com.github.sshadkany.CircleButton>
 

@@ -2,16 +2,20 @@ package com.sensorjang.titimer;
 
 import static android.content.ContentValues.TAG;
 
+import static net.crosp.libs.android.circletimeview.CircleTimeView.FORMAT_SECONDS_MINUTES;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.content.ContextCompat;
 
-
-import android.content.pm.ActivityInfo;
+import android.content.Context;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.media.AudioAttributes;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.os.Vibrator;
 import android.util.Log;
 import android.view.View;
@@ -21,20 +25,42 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.bigkoo.snappingstepper.SnappingStepper;
 import com.github.sshadkany.CircleButton;
 import com.github.sshadkany.RectButton;
-import com.mut_jaeryo.circletimer.CircleTimer;
+import com.king.app.dialog.AppDialog;
+import com.king.app.dialog.AppDialogConfig;
+import com.king.app.updater.AppUpdater;
 import com.sensorjang.titimer.utils.ColorUtil;
+import com.sensorjang.titimer.utils.httpGitAPICallable;
 import com.skydoves.balloon.ArrowOrientation;
 import com.skydoves.balloon.ArrowPositionRules;
 import com.skydoves.balloon.Balloon;
 import com.skydoves.balloon.BalloonAnimation;
 import com.skydoves.balloon.BalloonSizeSpec;
+import com.squareup.okhttp.Call;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 
 import net.crosp.libs.android.circletimeview.CircleTimeView;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.FutureTask;
+
+import cz.msebera.android.httpclient.client.methods.CloseableHttpResponse;
+import cz.msebera.android.httpclient.client.methods.HttpGet;
+import cz.msebera.android.httpclient.impl.client.CloseableHttpClient;
+import cz.msebera.android.httpclient.impl.client.HttpClients;
+import cz.msebera.android.httpclient.util.EntityUtils;
+
 public class MainActivity extends AppCompatActivity {
+
+    Map getMap ;//用于获取版本更新
 
     RectButton r_button1;
     RectButton r_button2;
@@ -44,21 +70,27 @@ public class MainActivity extends AppCompatActivity {
     RectButton btn_fllstus;
     RectButton btn_clr;
     RectButton start_btn;
-    RectButton fll_btn;
+    RectButton btn_update;
     RectButton ok_btn;
     CircleButton c_button1;
     ImageView sunOrMoonImg;
-    CircleTimer timer;
+    CircleTimeView timer;
     Balloon balloon;
     TextView startTxt;
     TextView fllstusTxt;
     int flag = 1;//循环标志 1开 0关
-    int timeMem=3600;//时间循环段长度记忆
+    long timeMem=3600;//时间循环段长度记忆
     int dingMen=0;//定长时间循环段长度记忆
     Vibrator vibrator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        try {
+            System.out.println(getVersionName(MainActivity.this));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //透明状态栏
         Window window = this.getWindow();
@@ -82,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         r_button5 = findViewById(R.id.btn5);
         btn_fllstus = findViewById(R.id.btn_fllstus);
         start_btn = findViewById(R.id.btn_start);
-        fll_btn = findViewById(R.id.btn_fll);
+        btn_update = findViewById(R.id.btn_update);
         c_button1 = findViewById(R.id.cbtn1);
         timer = findViewById(R.id.timer);
         btn_clr = findViewById(R.id.btn_clr);
@@ -100,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                 ColorUtil.turnToNight(r_button4);
                 ColorUtil.turnToNight(r_button5);
                 ColorUtil.turnToNight(btn_fllstus);
-                ColorUtil.turnToNight(fll_btn);
+                ColorUtil.turnToNight(btn_update);
                 ColorUtil.turnToNight(c_button1);
                 ColorUtil.turnToNight(btn_clr);
                 ColorUtil.turnToNight(start_btn);
@@ -112,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
                 ColorUtil.turnToDay(r_button4);
                 ColorUtil.turnToDay(r_button5);
                 ColorUtil.turnToDay(btn_fllstus);
-                ColorUtil.turnToDay(fll_btn);
+                ColorUtil.turnToDay(btn_update);
                 ColorUtil.turnToDay(c_button1);
                 ColorUtil.turnToDay(btn_clr);
                 ColorUtil.turnToDay(start_btn);
@@ -120,8 +152,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //初始化Timer
-        timer.setMaximumTime(3600);
-        timer.setValue(300);
+//        timer.setMaximumTime(3600);
+//        timer.setValue(300);
+        timer.setCurrentTime(0,FORMAT_SECONDS_MINUTES);
 
 
         r_button2.setOnClickListener(new View.OnClickListener() {//dark mode btn
@@ -136,13 +169,8 @@ public class MainActivity extends AppCompatActivity {
 //                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                     mode = AppCompatDelegate.MODE_NIGHT_NO;
                 }
-
-                timer.stop();
-                int mem = timer.getValue();
-                timer.reset();
                 AppCompatDelegate.setDefaultNightMode(mode);
-                timer.setValue(mem);
-                if(!startTxt.getText().equals("Start"))timer.start();
+                if(!startTxt.getText().equals("Start"))timer.startTimer();
 
             }
         });
@@ -151,18 +179,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 vib(52);
-                if(timer.getValue()==0){
+                if(timer.getCurrentTimeInSeconds()==0){
                     Toast toast = Toast.makeText(getApplicationContext(),"记得设定时间哦!",Toast.LENGTH_SHORT);
                     toast.show();
                     return;
                 }
                 if(startTxt.getText().equals("Start")){
-                    timer.stop();
-                    timeMem = timer.getValue();
-                    timer.start();
+                    timer.stopTimer();
+                    timeMem = timer.getCurrentTimeInSeconds();
+                    timer.startTimer();
                     startTxt.setText("Stop");
                 }else {
-                    timer.stop();
+                    timer.stopTimer();
                     startTxt.setText("Start");
                 }
             }
@@ -171,24 +199,88 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 vib(52);
-                if(timer.getValue()==0) {
+                if(timer.getCurrentTimeInSeconds()==0) {
                     Toast toast = Toast.makeText(getApplicationContext(),"记得设定时间哦!",Toast.LENGTH_SHORT);
                     toast.show();
                     return;
                 }
                 if(startTxt.getText().equals("Start")){
-                    timer.stop();
-                    timeMem = timer.getValue();
-                    timer.start();
+                    timer.stopTimer();
+                    timeMem = timer.getCurrentTimeInSeconds();
+                    timer.startTimer();
                     startTxt.setText("Stop");
                 }else {
-                    timer.stop();
+                    timer.stopTimer();
                     startTxt.setText("Start");
                 }
             }
         });
 
-        fll_btn.setOnClickListener(new View.OnClickListener() {
+        btn_update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                vib(52);
+                Toast toast1 = Toast.makeText(getApplicationContext(),"稍等我三秒钟叭!",Toast.LENGTH_SHORT);
+                toast1.show();
+                //gitee api url:https://gitee.com/api/v5/repos/Sensorjang/TiTimer/releases/latest
+                //github api url:https://api.github.com/repos/Sensorjang/TiTimer/releases/latest
+                String giteeUrl = "https://gitee.com/api/v5/repos/Sensorjang/TiTimer/releases/latest";
+                String result = null;
+                try {
+                    result = sendGetRequest(giteeUrl);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if(result!=null){
+                    getMap = (Map) JSON.parse(result);
+                    Log.i(TAG, "Version info get success");
+                }else{
+                    Log.i(TAG, "Version info get failed");
+                }
+                String newVersionName = null;
+                if(getMap!=null){
+                    newVersionName= getMap.get("tag_name").toString();
+                    Log.i(TAG, "NEW Version info get success");
+                }else{
+                    Log.i(TAG, "NEW Version info get failed");
+                }
+                boolean isWillUpdate = false;
+                try {
+                    if(getVersionName(MainActivity.this).equals(newVersionName)){
+                        Toast toast2 = Toast.makeText(getApplicationContext(),"已经是最新版了哦!",Toast.LENGTH_SHORT);
+                        toast2.show();
+                    }else isWillUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if(isWillUpdate){
+                    List l =JSON.parseArray(getMap.get("assets").toString());
+                    Map simpleMap = (Map) JSON.parse(l.get(0).toString());
+                    String downloadUrl = simpleMap.get("browser_download_url").toString();
+                    String desc = "船新版本："+getMap.get("name")+"\n船新体验："+getMap.get("body");
+
+                    AppDialogConfig config = new AppDialogConfig(MainActivity.this);
+                    config.setTitle("马上开始升级")
+                            .setConfirm("升级") //旧版本使用setOk
+                            .setContent("desc")
+                            .setOnClickConfirm(new View.OnClickListener() { //旧版本使用setOnClickOk
+                                @Override
+                                public void onClick(View v) {
+                                    new AppUpdater.Builder()
+                                            .setUrl(downloadUrl)
+                                            .build(MainActivity.this)
+                                            .start();
+                                    AppDialog.INSTANCE.dismissDialog();
+                                }
+                            });
+                    AppDialog.INSTANCE.showDialog(MainActivity.this,config);
+                }
+
+            }
+        });
+
+        btn_fllstus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vib(52);
@@ -206,11 +298,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 vib(50);
-                timer.stop();
-                timer.setMaximumTime(60);
-                timer.setValue(60);
+                timer.stopTimer();
+//                timer.setMaximumTime(60);
+                timer.setCurrentTime(60);
                 dingMen=60;
-                timer.start();
+                timer.startTimer();
                 startTxt.setText("Stop");
 
                 flag=1;//循环已开
@@ -222,11 +314,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 vib(50);
-                timer.stop();
-                timer.setMaximumTime(60*5);
-                timer.setValue(60*5);
+                timer.stopTimer();
+//                timer.setMaximumTime(60*5);
+                timer.setCurrentTime(60*5);
                 dingMen=60*5;
-                timer.start();
+                timer.startTimer();
                 startTxt.setText("Stop");
 
                 flag=1;//循环已开
@@ -238,11 +330,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 vib(50);
-                timer.stop();
-                timer.setMaximumTime(60*10);
-                timer.setValue(60*10);
+                timer.stopTimer();
+//                timer.setMaximumTime(60*10);
+                timer.setCurrentTime(60*10);
                 dingMen=60*10;
-                timer.start();
+                timer.startTimer();
                 startTxt.setText("Stop");
 
                 flag=1;//循环已开
@@ -302,34 +394,61 @@ public class MainActivity extends AppCompatActivity {
                 vib(52);
                 timeMem=3600;//时间循环段长度记忆
                 dingMen=0;//定长时间循环段长度记忆
-                timer.stop();
-                timer.setMaximumTime(3600);
-                timer.setValue(300);
+                timer.stopTimer();
+//                timer.setMaximumTime(3600);
+                timer.setCurrentTime(0);
                 startTxt.setText("Start");
             }
         });
 
-        timer.setBaseTimerEndedListener(new CircleTimer.baseTimerEndedListener() { //timer
+        timer.setCircleTimeListener(new CircleTimeView.CircleTimeListener() {
             @Override
-            public void OnEnded() {
-                startTxt.setText("Start");
-                timer.stop();
-                vib(1500);
-                if(flag==1){//循环开
-                    timer.setMaximumTime(dingMen==0?timeMem:dingMen);//循环
-                    timer.setValue(dingMen==0?timeMem:dingMen);
-                    timer.start();
-                    startTxt.setText("Stop");
-                    Toast toast = Toast.makeText(getApplicationContext(),"我会继续循环提醒你哦!",Toast.LENGTH_SHORT);
-                    toast.show();
-                }else {
-                    Toast toast = Toast.makeText(getApplicationContext(),"时间到咯!",Toast.LENGTH_SHORT);
-                    toast.show();
+            public void onTimeManuallySet(long time) {
+                Log.d("TIME LISTENER", "onTimeManuallySet " + time);
+            }
+
+            @Override
+            public void onTimeManuallyChanged(long time) {
+                Log.d("TIME LISTENER", "onTimeManuallyChanged " + time);
+            }
+
+            @Override
+            public void onTimeUpdated(long time) {
+                Log.d("TIME LISTENER", "onTimeUpdated " + time);
+            }
+        });
+        timer.setCircleTimerListener(new CircleTimeView.CircleTimerListener() {
+            @Override
+            public void onTimerStop() {
+                Log.d("TIMER LISTENER", "onTimerStop ");
+            }
+            @Override
+            public void onTimerStart(long time) {
+                Log.d("TIMER LISTENER", "onTimerStart " + time);
+            }
+
+            @Override
+            public void onTimerTimeValueChanged(long time) {
+                Log.d("TIMER LISTENER", "onTimerTimeValueChanged " + time);
+                if(time==0){
+                    startTxt.setText("Start");
+                    timer.stopTimer();
+                    vib(1500);
+                    if(flag==1){//循环开
+//                    timer.setMaximumTime(dingMen==0?timeMem:dingMen);//循环
+                        timer.setCurrentTime(dingMen==0?timeMem:dingMen);
+                        timer.startTimer();
+                        startTxt.setText("Stop");
+                        Toast toast = Toast.makeText(getApplicationContext(),"我会继续循环提醒你哦!",Toast.LENGTH_SHORT);
+                        toast.show();
+                    }else {
+                        Toast toast = Toast.makeText(getApplicationContext(),"时间到咯!",Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
                 }
             }
         });
 
-        timer.stop();
     }
 
     private void initOkBtn(){
@@ -351,11 +470,11 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                timer.stop();
-                timer.setMaximumTime(time_total);
-                timer.setValue(time_total);
+                timer.stopTimer();
+//                timer.setMaximumTime(time_total);
+                timer.setCurrentTime(time_total);
                 dingMen=time_total;
-                timer.start();
+                timer.startTimer();
                 startTxt.setText("Stop");
 
                 flag=1;//循环已开
@@ -370,6 +489,62 @@ public class MainActivity extends AppCompatActivity {
                 .setUsage(AudioAttributes.USAGE_ALARM)
                 .build();
         vibrator.vibrate(new long[]{0,time}, -1,VIBRATION_ATTRIBUTES);
+    }
+
+    // 利用http client发起get请求获取信息
+    public static String sendGetRequest(String url) throws IOException, ExecutionException, InterruptedException {
+
+        httpGitAPICallable callable = new httpGitAPICallable();
+        callable.setUrl(url);
+        FutureTask<String> ft = new FutureTask<>(callable);
+        Thread thread = new Thread(ft);
+        thread.start();
+        SystemClock.sleep(3000);
+        return ft.get();
+    }
+//        //1.创建httpclient对象
+//        CloseableHttpClient httpClient = HttpClients.createDefault();
+//        //2.创建httpget对象，设置url地址
+//        HttpGet httpGet = new HttpGet(url);
+//        CloseableHttpResponse response = null;
+//        //在外面创建，为方便最后关闭
+//        String content=null;
+//        try {
+//            //3.使用httpclient发起请求，获取response
+//            response = httpClient.execute(httpGet);
+//            //4.解析响应
+//
+//            if (response.getStatusLine().getStatusCode() == 200){
+//                //状态码200为成功
+//                content = EntityUtils.toString(response.getEntity(), "utf8");
+//                System.out.println(content.length());
+//                Log.e(TAG, "sendGetRequest: "+response.toString() );
+//            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }finally {
+//            //关闭response
+//            try {
+//                response.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                httpClient.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//            return content;
+//        }
+
+
+    public static String getVersionName(Context context) throws Exception {
+// 获取packagemanager的实例
+        PackageManager packageManager = context.getPackageManager();
+// getPackageName()是你当前类的包名
+        PackageInfo packInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+        String version = packInfo.versionName;
+        return version;
     }
 
 
