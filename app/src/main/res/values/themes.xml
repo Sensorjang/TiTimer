@@ -1,0 +1,37 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.TiTimer" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:background">#EFEFE6</item>
+    </style>
+
+    <style name="Theme.TiTimerNight" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="android:background">#393838</item>
+    </style>
+
+    <style name="Style.NightButton">
+        <item name="shape_roundRect_backgroundColor">#3F4042</item>
+        <item name="shape_roundRect_dark_color">#151515</item>
+        <item name="shape_roundRect_light_color">#4E4D4D</item>
+        <item name="shape_roundRect_borderColor">#424141</item>
+    </style>
+    <style name="Style.DayButton">
+        <item name="shape_roundRect_backgroundColor">#EFEFED</item>
+        <item name="shape_roundRect_dark_color">#807E7E</item>
+        <item name="shape_roundRect_light_color">#FFFFFF</item>
+        <item name="shape_roundRect_borderColor">#F1F4EB</item>
+    </style>
+    <style name="Style.NightButtonC">
+        <item name="shape_circle_backgroundColor">#3F4042</item>
+        <item name="shape_circle_dark_color">#151515</item>
+        <item name="shape_circle_light_color">#4E4D4D</item>
+        <item name="shape_circle_borderColor">#424141</item>
+    </style>
+    <style name="Style.DayButtonC">
+        <item name="shape_circle_backgroundColor">#EFEFED</item>
+        <item name="shape_circle_dark_color">#807E7E</item>
+        <item name="shape_circle_light_color">#FFFFFF</item>
+        <item name="shape_circle_borderColor">#F1F4EB</item>
+    </style>
+    <style name="Style">NightButton</style>
+
+</resources>

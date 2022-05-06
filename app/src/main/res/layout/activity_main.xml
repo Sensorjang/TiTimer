@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/btnTest"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    tools:context=".MainActivity">
+
+    <com.github.sshadkany.RectButton
+        android:id="@+id/btn2"
+        style="@style/Style.DayButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_margin="5dp"
+
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+
+        app:shape_roundRect_borderWidth="1dp"
+        app:shape_roundRect_bottomLeftRadius="100dp"
+        app:shape_roundRect_bottomRightRadius="100dp"
+        app:shape_roundRect_shadow_position_x="6dp"
+        app:shape_roundRect_shadow_position_y="6dp"
+        app:shape_roundRect_shadow_type="drop_shadow"
+        app:shape_roundRect_topLeftRadius="100dp"
+        app:shape_roundRect_topRightRadius="100dp">
+
+        <ImageView
+            android:id="@+id/sunOrMoon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:background="@color/clear"
+            android:src="@drawable/moon" />
+    </com.github.sshadkany.RectButton>
+
+    <com.github.sshadkany.RectButton
+        android:id="@+id/btn_clr"
+        style="@style/Style.DayButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+
+        android:layout_marginStart="-35dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toEndOf="@+id/btn2"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shape_roundRect_borderWidth="1dp"
+        app:shape_roundRect_bottomLeftRadius="100dp"
+        app:shape_roundRect_bottomRightRadius="100dp"
+        app:shape_roundRect_shadow_position_x="6dp"
+        app:shape_roundRect_shadow_position_y="6dp"
+        app:shape_roundRect_shadow_type="drop_shadow"
+        app:shape_roundRect_topLeftRadius="100dp"
+        app:shape_roundRect_topRightRadius="100dp">
+
+        <ImageView
+            android:id="@+id/dsn"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:background="@color/clear"
+            android:src="@drawable/dsn" />
+    </com.github.sshadkany.RectButton>
+
+    <com.github.sshadkany.RectButton
+        android:id="@+id/btn_fll"
+        style="@style/Style.DayButton"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+
+        android:layout_marginStart="-35dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toEndOf="@+id/btn_clr"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shape_roundRect_borderWidth="1dp"
+        app:shape_roundRect_bottomLeftRadius="100dp"
+        app:shape_roundRect_bottomRightRadius="100dp"
+        app:shape_roundRect_shadow_position_x="6dp"
+        app:shape_roundRect_shadow_position_y="6dp"
+        app:shape_roundRect_shadow_type="drop_shadow"
+        app:shape_roundRect_topLeftRadius="100dp"
+        app:shape_roundRect_topRightRadius="100dp">
+
+        <ImageView
+            android:id="@+id/fll"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="center"
+            android:background="@color/clear"
+            android:src="@drawable/fll" />
+    </com.github.sshadkany.RectButton>
+
+    <com.github.sshadkany.RectButton
+        android:id="@+id/btn_fllstus"
+        style="@style/Style.DayButton"
+        android:layout_width="160dp"
+        android:layout_height="100dp"
+
+        android:layout_marginStart="-35dp"
+        android:layout_marginTop="5dp"
+        app:layout_constraintStart_toEndOf="@+id/btn_fll"
+        app:layout_constraintTop_toTopOf="parent"
+        app:shape_roundRect_borderWidth="1dp"
+        app:shape_roundRect_bottomLeftRadius="100dp"
+        app:shape_roundRect_bottomRightRadius="100dp"
+        app:shape_roundRect_shadow_position_x="6dp"
+        app:shape_roundRect_shadow_position_y="6dp"
+        app:shape_roundRect_shadow_type="drop_shadow"
+        app:shape_roundRect_topLeftRadius="100dp"
+        app:shape_roundRect_topRightRadius="100dp">
+
+        <TextView
+            android:id="@+id/fllstus_txt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/clear"
+            android:fontFamily="@font/aldrich"
+            android:text="循环： ON"
+            android:textSize="16sp" />
+
+    </com.github.sshadkany.RectButton>
+
+    <LinearLayout
+        android:layout_width="383dp"
+        android:layout_height="305dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="40dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.github.sshadkany.CircleButton
+            android:id="@+id/cbtn1"
+            style="@style/Style.DayButtonC"
+            android:layout_width="310dp"
+            android:layout_height="310dp"
+            android:layout_gravity="center">
+
+
+
+            <com.mut_jaeryo.circletimer.CircleTimer
+                android:id="@+id/timer"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_gravity="center"
+                android:background="@color/clear"
+                android:foregroundGravity="center"
+                android:visibility="visible"
+                app:init_position="794"
+                app:isOutline="true"
+                app:show_text="true" />
+
+        </com.github.sshadkany.CircleButton>
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout3"
+        android:layout_width="393dp"
+        android:layout_height="110dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="5dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/linear1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.github.sshadkany.RectButton
+            android:id="@+id/btn_start"
+            style="@style/Style.DayButton"
+            android:layout_width="168dp"
+            android:layout_height="105dp"
+            android:layout_gravity="center|top"
+            android:layout_margin="5dp"
+            android:foregroundGravity="top"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+
+            app:shape_roundRect_borderWidth="1dp"
+            app:shape_roundRect_bottomLeftRadius="100dp"
+            app:shape_roundRect_bottomRightRadius="100dp"
+            app:shape_roundRect_shadow_position_x="6dp"
+
+            app:shape_roundRect_shadow_position_y="6dp"
+            app:shape_roundRect_shadow_type="drop_shadow"
+            app:shape_roundRect_topLeftRadius="100dp"
+            app:shape_roundRect_topRightRadius="100dp">
+
+            <TextView
+                android:id="@+id/txt_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/clear"
+                android:fontFamily="@font/aldrich"
+                android:text="Start"
+                android:textSize="20sp" />
+
+        </com.github.sshadkany.RectButton>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear1"
+        android:layout_width="346dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/linear4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <com.github.sshadkany.RectButton
+            android:id="@+id/btn1"
+            style="@style/Style.DayButton"
+            android:layout_width="167dp"
+            android:layout_height="96dp"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+
+            app:shape_roundRect_borderWidth="1dp"
+            app:shape_roundRect_bottomLeftRadius="100dp"
+
+            app:shape_roundRect_bottomRightRadius="100dp"
+            app:shape_roundRect_shadow_position_x="6dp"
+            app:shape_roundRect_shadow_position_y="6dp"
+            app:shape_roundRect_shadow_type="drop_shadow"
+
+            app:shape_roundRect_topLeftRadius="100dp"
+            app:shape_roundRect_topRightRadius="100dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/clear"
+                android:fontFamily="@font/aldrich"
+                android:text="1min循环"
+                android:textSize="16sp" />
+
+        </com.github.sshadkany.RectButton>
+
+        <com.github.sshadkany.RectButton
+            android:id="@+id/btn3"
+            style="@style/Style.DayButton"
+            android:layout_width="167dp"
+            android:layout_height="96dp"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+
+            app:shape_roundRect_borderWidth="1dp"
+            app:shape_roundRect_bottomLeftRadius="100dp"
+
+            app:shape_roundRect_bottomRightRadius="100dp"
+            app:shape_roundRect_shadow_position_x="6dp"
+            app:shape_roundRect_shadow_position_y="6dp"
+            app:shape_roundRect_shadow_type="drop_shadow"
+
+            app:shape_roundRect_topLeftRadius="100dp"
+            app:shape_roundRect_topRightRadius="100dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/clear"
+                android:fontFamily="@font/aldrich"
+                android:text="5min循环"
+                android:textSize="16sp" />
+
+
+        </com.github.sshadkany.RectButton>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linear4"
+        android:layout_width="346dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints">
+
+        <com.github.sshadkany.RectButton
+            android:id="@+id/btn4"
+            style="@style/Style.DayButton"
+            android:layout_width="167dp"
+            android:layout_height="96dp"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+
+            app:shape_roundRect_borderWidth="1dp"
+            app:shape_roundRect_bottomLeftRadius="100dp"
+
+            app:shape_roundRect_bottomRightRadius="100dp"
+            app:shape_roundRect_shadow_position_x="6dp"
+            app:shape_roundRect_shadow_position_y="6dp"
+            app:shape_roundRect_shadow_type="drop_shadow"
+
+            app:shape_roundRect_topLeftRadius="100dp"
+            app:shape_roundRect_topRightRadius="100dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/clear"
+                android:fontFamily="@font/aldrich"
+                android:text="10min循环"
+                android:textSize="16sp" />
+
+
+        </com.github.sshadkany.RectButton>
+
+        <com.github.sshadkany.RectButton
+            android:id="@+id/btn5"
+            style="@style/Style.DayButton"
+            android:layout_width="167dp"
+            android:layout_height="96dp"
+            android:layout_margin="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+
+            app:shape_roundRect_borderWidth="1dp"
+            app:shape_roundRect_bottomLeftRadius="100dp"
+
+            app:shape_roundRect_bottomRightRadius="100dp"
+            app:shape_roundRect_shadow_position_x="6dp"
+            app:shape_roundRect_shadow_position_y="6dp"
+            app:shape_roundRect_shadow_type="drop_shadow"
+
+            app:shape_roundRect_topLeftRadius="100dp"
+            app:shape_roundRect_topRightRadius="100dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@color/clear"
+                android:fontFamily="@font/aldrich"
+                android:text="自定循环"
+                android:textSize="16sp" />
+
+
+        </com.github.sshadkany.RectButton>
+    </LinearLayout>
+
+    <!--    app:shape_circle_backgroundColor="#ECF0F3"-->
+
+</androidx.constraintlayout.widget.ConstraintLayout>
