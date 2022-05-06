@@ -263,7 +263,7 @@ public class MainActivity extends AppCompatActivity {
                     AppDialogConfig config = new AppDialogConfig(MainActivity.this);
                     config.setTitle("马上开始升级")
                             .setConfirm("升级") //旧版本使用setOk
-                            .setContent("desc")
+                            .setContent(desc)
                             .setOnClickConfirm(new View.OnClickListener() { //旧版本使用setOnClickOk
                                 @Override
                                 public void onClick(View v) {
